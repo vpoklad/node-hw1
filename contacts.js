@@ -1,6 +1,7 @@
 const fs = require ('fs/promises');
 const path = require('path');
 const { v4: uuid } = require('uuid');
+const colors = require('colors');
 
 
  const contactsPath = path.join(__dirname, 'db','contacts.JSON' );
@@ -15,16 +16,24 @@ const  listContacts = async()=> {
 
 const  getContactById = async (contactId) => {
   const contacts = await listContacts();
-  return contacts.filter(item => item.id === contactId) 
+  const contact = contacts.find(item => item.id === contactId);
+  if (!contact) {
+    console.log("Nothing founded".red)
+    return
+  }
+  return contact
 }
 
 const removeContact = async (contactId) => {
   const contacts = await listContacts();
   const contactToRemove = contacts.find(item => item.id === contactId)
-  if (!contactToRemove) { return }
+  if (!contactToRemove) {
+    console.log("Invalid id!".red);
+    return
+  }
   const content = contacts.filter((item => item.id !== contactId));
   await fs.writeFile(contactsPath, JSON.stringify(content, null, 2))
-  console.log("Contact deleted! ", contactToRemove )
+  console.log("Contact deleted! " .red)
 }
 
 const  addContact = async (name, email, phone)=> {
@@ -32,7 +41,9 @@ const  addContact = async (name, email, phone)=> {
   const newContact = { id: uuid(), name, email, phone, }
   contacts.push(newContact);
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  console.log("New Contact added!", newContact)
+  console.log("New Contact added!".green);
+  console.log(newContact)
+
 }
 
 
