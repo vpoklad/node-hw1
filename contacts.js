@@ -4,14 +4,14 @@ const { v4: uuid } = require('uuid');
 const colors = require('colors');
 
 
- const contactsPath = path.join(__dirname, 'db','contacts.JSON' );
+const contactsPath = path.join(__dirname, 'db','contacts.JSON' );
  
  
 
 
 const  listContacts = async()=> {
-    const contacts = await fs.readFile(contactsPath, 'utf8')
-    return JSON.parse(contacts)
+  const contacts = await fs.readFile(contactsPath, 'utf8')
+  return JSON.parse(contacts)
 }
 
 const  getContactById = async (contactId) => {
@@ -36,7 +36,11 @@ const removeContact = async (contactId) => {
   console.log("Contact deleted! " .red)
 }
 
-const  addContact = async (name, email, phone)=> {
+const addContact = async (name, email, phone) => {
+  if (name === undefined || email === undefined || phone === undefined) {
+    console.log("Invalid input!".red)
+    return
+  }
   const contacts = await listContacts();
   const newContact = { id: uuid(), name, email, phone, }
   contacts.push(newContact);
